@@ -1,3 +1,4 @@
+import yaml
 import os
 import logging
 import pickle
@@ -30,11 +31,16 @@ def split_features_labels(df: pd.DataFrame, label_col: str = 'label') -> Tuple[n
     return X, y
 
 def train_model(X: np.ndarray, y: np.ndarray) -> ClassifierMixin:
+    with open("params.yaml", "r") as file:
+        params = yaml.safe_load(file)
+
+    n_estimators = params["model_building"]["n_estimators"]
+    max_depth = params["model_building"]["max_depth"]
     """
     Train a RandomForestClassifier model.
     """
     logging.info("Training RandomForestClassifier model")
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=42)
     model.fit(X, y)
     return model
 

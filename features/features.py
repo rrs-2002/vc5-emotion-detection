@@ -1,3 +1,4 @@
+import yaml
 import pandas as pd
 import numpy as np
 import os
@@ -34,11 +35,15 @@ def vectorize_text(
     X_train: np.ndarray, 
     X_test: np.ndarray
 ) -> Tuple[spmatrix, spmatrix, CountVectorizer]:
+    with open("params.yaml", "r") as file:
+        params = yaml.safe_load(file)
+
+    max_features = params["feature_engg"]["max_features"]
     """
     Fit CountVectorizer on training data and transform both train and test data.
     """
     logging.info("Fitting CountVectorizer on training data")
-    vectorizer = CountVectorizer()
+    vectorizer = CountVectorizer(max_features=max_features)
     X_train_bow: spmatrix = vectorizer.fit_transform(X_train)
     X_test_bow: spmatrix = vectorizer.transform(X_test)
     return X_train_bow, X_test_bow, vectorizer

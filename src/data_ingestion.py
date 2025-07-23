@@ -1,3 +1,4 @@
+import yaml
 import os
 import logging
 from typing import Tuple
@@ -34,10 +35,15 @@ def preprocess_dataset(df: DataFrame) -> DataFrame:
     return df
 
 def split_dataset(df: DataFrame, test_size: float = 0.2, random_state: int = 42) -> Tuple[DataFrame, DataFrame]:
+    with open("params.yaml", "r") as file:
+        params = yaml.safe_load(file)
+
+    test_size = params["data_ingestion"]["test_size"]
     """
     Splits the DataFrame into train and test sets.
     """
     logging.info(f"Splitting dataset: {100*(1-test_size):.0f}% train, {100*test_size:.0f}% test")
+
     train, test = train_test_split(df, test_size=test_size, random_state=random_state)
     return train, test
 
