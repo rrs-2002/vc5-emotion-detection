@@ -4,7 +4,7 @@ import numpy as np
 import os
 import logging
 from typing import Tuple
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse import spmatrix
 
 # Configure logging
@@ -34,16 +34,16 @@ def extract_features_and_labels(df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarra
 def vectorize_text(
     X_train: np.ndarray, 
     X_test: np.ndarray
-) -> Tuple[spmatrix, spmatrix, CountVectorizer]:
+) -> Tuple[spmatrix, spmatrix, TfidfVectorizer]:
     with open("params.yaml", "r") as file:
         params = yaml.safe_load(file)
 
     max_features = params["feature_engg"]["max_features"]
     """
-    Fit CountVectorizer on training data and transform both train and test data.
+    Fit TfidfVectorizer on training data and transform both train and test data.
     """
-    logging.info("Fitting CountVectorizer on training data")
-    vectorizer = CountVectorizer(max_features=max_features)
+    logging.info("Fitting TfidfVectorizer on training data")
+    vectorizer = TfidfVectorizer(max_features=max_features)
     X_train_bow: spmatrix = vectorizer.fit_transform(X_train)
     X_test_bow: spmatrix = vectorizer.transform(X_test)
     return X_train_bow, X_test_bow, vectorizer
